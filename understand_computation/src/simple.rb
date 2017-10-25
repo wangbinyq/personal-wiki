@@ -17,11 +17,11 @@ class Add < Struct.new(:left, :right)
     true
   end
 
-  def reduce(envirenment)
+  def reduce(environment)
     if left.reducible?
-      Add.new(left.reduce(envirenment), right)
+      Add.new(left.reduce(environment), right)
     elsif right.reducible?
-      Add.new(left, right.reduce(envirenment))
+      Add.new(left, right.reduce(environment))
     else
       Number.new(left.value + right.value)
     end
@@ -41,11 +41,11 @@ class Multiply < Struct.new(:left, :right)
     true
   end
 
-  def reduce(envirenment)
+  def reduce(environment)
     if left.reducible?
-      Multiply.new(left.reduce(envirenment), right)
+      Multiply.new(left.reduce(environment), right)
     elsif right.reducible?
-      Multiply.new(left, right.reduce(envirenment))
+      Multiply.new(left, right.reduce(environment))
     else
       Number.new(left.value * right.value)
     end
@@ -87,11 +87,11 @@ class LessThan < Struct.new(:left, :right)
       true
   end
 
-  def reduce(envirenment)
+  def reduce(environment)
       if left.reducible?
-          LessThan.new(left.reduce(envirenment), right)
+          LessThan.new(left.reduce(environment), right)
       elsif right.reducible?
-          LessThan.new(left, right.reduce(envirenment))
+          LessThan.new(left, right.reduce(environment))
       else
           Boolean.new(left.value < right.value)
       end
@@ -111,8 +111,8 @@ class Variable < Struct.new(:name)
       true
   end
 
-  def reduce(envirenment)
-    envirenment[name]
+  def reduce(environment)
+    environment[name]
   end
 end
 
@@ -134,17 +134,108 @@ class DoNothing
   end
 end
 
-class Machine < Struct.new(:expression, :envirenment)
+class Assign < Struct.new(:name, :expression)
+  def to_s
+    "#{name} = #{expression}"
+  end
+
+  def inspect
+      "«#{self}»"
+  end
+
+  def reducible?
+      true
+  end
+
+  def reduce(environment)
+    if expression.reducible?
+      Assign.new(name, expression.reduce(environment))
+    else
+      [DoNothing.new, environment.merge({name => expression})]
+    end
+  end
+end
+
+class If < Struct.new(:condition, :consequence, :alternative)
+  def to_s
+     "if (#{condition}) { #{consequence} } else { #{alternative} }"
+  end
+
+  def inspect
+     "«#{self}»"
+  end
+
+  def reducible?
+     true
+  end
+
+  def reduce(environment)
+     if condition.reducible?
+        [If.new(condition.reduce(environment), consequence, alternative), environment]
+     else
+        case condition
+        when Boolean.new(true)
+           [consequence, environment]
+        when Boolean.new(false)
+           [alternative, environment]
+        end
+     end
+  end
+end
+
+class While < Struct.new(:condition, :body)
+  def to_s
+      "while (#{condition}) { #{body} }"
+  end
+
+  def inspect
+      "«#{self}»"
+  end
+
+  def reducible?
+      true
+  end
+
+  def reduce(environment)
+      [If.new(condition, Sequence.new(body, self), DoNothing.new), environment]
+  end
+end
+
+class Sequence < Struct.new(:first, :second)
+  def to_s
+      "#{first}; #{second}"
+  end
+
+  def inspect
+      "«#{self}»"
+  end
+
+  def reducible?
+      true
+  end
+
+  def reduce(environment)
+      case first
+      when DoNothing.new
+          [second, environment]
+      else
+          reduced_first, reduced_environment = first.reduce(environment)
+          [Sequence.new(reduced_first, second), reduced_environment]
+      end
+  end
+end
+
+class Machine < Struct.new(:statement, :environment)
   def step
-    self.expression = expression.reduce(envirenment)
+    self.statement, self.environment = statement.reduce(environment)
   end
 
   def run
-    while expression.reducible?
-        puts expression
+    while statement.reducible?
+        puts "#{statement}, #{environment}"
         step
     end
-    puts expression
+    puts "#{statement}, #{environment}"
   end
 end
 
@@ -153,11 +244,12 @@ expression = Add.new(
   Multiply.new(Number.new(3), Number.new(4))
 )
 
-machine = Machine.new(expression)
+machine = Machine.new(expression, {})
 machine.run
 
 Machine.new(
-  LessThan.new(Number.new(5), Add.new(Number.new(2), Number.new(2)))
+  LessThan.new(Number.new(5), Add.new(Number.new(2), Number.new(2))),
+  {}
   ).run
 
 Machine.new(

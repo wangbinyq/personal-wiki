@@ -9,7 +9,7 @@ puts hash[:width]
 multiply = -> x, y { x * y }
 puts multiply
 puts multiply.call(10, 20)
-puts multiply[10, 20]
+puts multiply[10, 20] # call by bracket
 
 # if
 val = if 2 < 3
