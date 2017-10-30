@@ -7,11 +7,12 @@ module.exports = {
     filename: "bundle.js"
   },
   resolve: {
-    extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
+    extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js", ".vert", ".frag", ".glsl"]
   },
   module: {
-    loaders: [
-      { test: /\.tsx?$/, loader: "awesome-typescript-loader" }
+    rules: [
+      { test: /\.tsx?$/, use: "awesome-typescript-loader" },
+      { test: /(\.vert)|(\.frag)|(\.glsl)/, use: "raw-loader"}
     ]
   },
   plugins: [

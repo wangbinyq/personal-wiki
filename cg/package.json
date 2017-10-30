@@ -15,7 +15,9 @@
   "license": "ISC",
   "dependencies": {},
   "devDependencies": {
+    "@types/webgl2": "0.0.2",
     "awesome-typescript-loader": "^3.2.3",
+    "raw-loader": "^0.5.1",
     "tslint": "^5.8.0",
     "tslint-config-standard": "^7.0.0",
     "types": "^0.1.1",
