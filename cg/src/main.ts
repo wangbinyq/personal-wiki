@@ -7,11 +7,17 @@ const gl = (window as any).gl = setupContext('#gl-canvas', 800, 600)
 const shader = new Shader(gl, vs, fs)
 shader.use()
 
-const vertices: [number] = [
+const vertices = [
     // positions         // colors
   0.5, -0.5, 0.0, 1.0, 0.0, 0.0,   // bottom right
   -0.5, -0.5, 0.0, 0.0, 1.0, 0.0,   // bottom left
   0.0, 0.5, 0.0, 0.0, 0.0, 1.0    // top
+]
+
+const texCoords = [
+  0, 0,
+  1, 0,
+  0.5, 1
 ]
 
 const vbo = gl.createBuffer()
