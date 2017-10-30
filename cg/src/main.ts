@@ -1,4 +1,4 @@
-import { setupContext } from './utils'
+import { setupContext, setupTexture } from './utils'
 import Shader from './shader'
 import vs from './shaders/vs'
 import fs from './shaders/fs'
@@ -49,21 +49,10 @@ gl.enableVertexAttribArray(2)
 gl.clearColor(0.2, 0.3, 0.3, 1)
 gl.clear(gl.COLOR_BUFFER_BIT)
 
-const texture = gl.createTexture()
-gl.bindTexture(gl.TEXTURE_2D, texture)
-gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
-gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
-gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+const texture1 = setupTexture(gl, '#container', 0)
+const texture2 = setupTexture(gl, '#wall', 1)
 
-const image = document.querySelector('#wall') as HTMLImageElement
-if (!image) {
-  throw new Error('image wall not exists')
-}
-const width = image.naturalWidth
-const height = image.naturalHeight
-
-gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, width, height, 0, gl.RGB, gl.UNSIGNED_BYTE, image)
+shader.setInt('texture2', 1)
 
 function render () {
   gl.clear(gl.COLOR_BUFFER_BIT)
