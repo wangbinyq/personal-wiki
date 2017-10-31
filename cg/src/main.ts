@@ -98,9 +98,9 @@ gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
 
-const image = document.querySelector('#wall') as HTMLImageElement
+const image = document.querySelector('#container') as HTMLImageElement
 if (!image) {
-  throw new Error('image wall not exists')
+  throw new Error('image container not exists')
 }
 const width = image.naturalWidth
 const height = image.naturalHeight
@@ -117,22 +117,16 @@ let projection
 function render () {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-  // const time = Date.now() / 1000
-  // const position = Math.sin(time)
-  // shader.setFloat('position', position)
-
-  model = mat4.fromXRotation(mat4.create(), glMatrix.toRadian(-55))
   view = mat4.fromTranslation(mat4.create(), [viewPositionX, viewPositionY, viewPositionZ])
   projection = mat4.perspective(mat4.create(), glMatrix.toRadian(45), width / height, 0.1, 100)
 
-  // model = mat4.rotate(model, model, Date.now() / 1000 * glMatrix.toRadian(50), [0.5, 1, 0])
-  // shader.setMatrix4fv('model', model)
   shader.setMatrix4fv('view', view)
   shader.setMatrix4fv('projection', projection)
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < cubePosition.length; i++) {
+    model = mat4.create()
     model = mat4.translate(model, model, cubePosition[i])
-    const angle = 20 * i
-    // model = mat4.rotate(model, model, glMatrix.toRadian(angle), [1, 0.3, 0.5])
+    const angle = 20 * i * (Date.now() / 1000)
+    model = mat4.rotate(model, model, glMatrix.toRadian(angle), [1, 0.3, 0.5])
     shader.setMatrix4fv('model', model)
 
     gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 5)
