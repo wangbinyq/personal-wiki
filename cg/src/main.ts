@@ -1,5 +1,6 @@
 import { setupContext } from './utils'
-import { mat4, glMatrix } from 'gl-matrix'
+import { mat4, glMatrix, vec3 } from 'gl-matrix'
+import keycode from 'keycode'
 import Shader from './shader'
 import vs from './shaders/vs'
 import fs from './shaders/fs'
@@ -107,25 +108,37 @@ const height = image.naturalHeight
 
 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, width, height, 0, gl.RGB, gl.UNSIGNED_BYTE, image)
 
-let viewPositionX = 0
-let viewPositionY = 0
-let viewPositionZ = -3
 let model
 let view
 let projection
+let cameraPos = vec3.fromValues(0, 0, 3)
+let cameraFront = vec3.fromValues(0, 0, -1)
+let cameraUp = vec3.fromValues(0, 1, 0)
+let deltaTime = 0
+let lastFrame = 0
+
+let firstMouse = true
+let yaw = -90
+let pitch = 0
+let lastX = width / 2
+let lastY = height / 2
+let fov = 45
 
 function render () {
+  const now = Date.now() / 1000
+  deltaTime = now - lastFrame
+  lastFrame = now
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-  view = mat4.fromTranslation(mat4.create(), [viewPositionX, viewPositionY, viewPositionZ])
-  projection = mat4.perspective(mat4.create(), glMatrix.toRadian(45), width / height, 0.1, 100)
+  view = mat4.lookAt(mat4.create(), cameraPos, vec3.add(vec3.create(), cameraPos, cameraFront), cameraUp)
+  projection = mat4.perspective(mat4.create(), glMatrix.toRadian(fov), width / height, 0.1, 100)
 
   shader.setMatrix4fv('view', view)
   shader.setMatrix4fv('projection', projection)
   for (let i = 0; i < cubePosition.length; i++) {
     model = mat4.create()
     model = mat4.translate(model, model, cubePosition[i])
-    const angle = 20 * i * (Date.now() / 1000)
+    const angle = 20 * i * now
     model = mat4.rotate(model, model, glMatrix.toRadian(angle), [1, 0.3, 0.5])
     shader.setMatrix4fv('model', model)
 
@@ -134,39 +147,82 @@ function render () {
   requestAnimationFrame(render)
 }
 
-function setupUi () {
-  const $canvas = document.getElementById('gl-canvas')
-  const $far = document.getElementById('far')
-  const $near = document.getElementById('near')
-  const $left = document.getElementById('left')
-  const $up = document.getElementById('up')
-  const $right = document.getElementById('right')
-  const $down = document.getElementById('down')
+render()
 
-  $far.onclick = () => viewPositionZ += 0.1
-  $near.onclick = () => viewPositionZ -= 0.1
-  $left.onclick = () => viewPositionX -= 0.1
-  $up.onclick = () => viewPositionY += 0.1
-  $right.onclick = () => viewPositionX += 0.1
-  $down.onclick = () => viewPositionY -= 0.1
+window.onkeydown = (e) => {
+  const cameraSpeed = 2.5 * deltaTime
 
-  window.onkeydown = (e) => {
-    switch (e.keyCode) {
-      case 37:
-        viewPositionX -= 0.01
-        break
-      case 38:
-        viewPositionY += 0.01
-        break
-      case 39:
-        viewPositionX += 0.01
-        break
-      case 40:
-        viewPositionY -= 0.01
-        break
-    }
+  switch (keycode(e)) {
+    case 'w':
+    case 'up':
+      vec3.add(cameraPos, cameraPos, vec3.scale(vec3.create(), cameraFront, cameraSpeed))
+      break
+    case 's':
+    case 'down':
+      vec3.sub(cameraPos, cameraPos, vec3.scale(vec3.create(), cameraFront, cameraSpeed))
+      break
+    case 'a':
+    case 'left':
+      {
+        let cross = vec3.cross(vec3.create(), cameraFront, cameraUp)
+        let normalize = vec3.normalize(vec3.create(), cross)
+        vec3.sub(cameraPos, cameraPos, vec3.scale(vec3.create(), normalize, cameraSpeed))
+      }
+      break
+    case 'd':
+    case 'right':
+      {
+        let cross = vec3.cross(vec3.create(), cameraFront, cameraUp)
+        let normalize = vec3.normalize(vec3.create(), cross)
+        vec3.add(cameraPos, cameraPos, vec3.scale(vec3.create(), normalize, cameraSpeed))
+      }
+      break
+    case 'r':
+      cameraPos = vec3.fromValues(0, 0, 3)
+      cameraFront = vec3.fromValues(0, 0, -1)
+      cameraUp = vec3.fromValues(0, 1, 0)
+      yaw = -90
+      pitch = 0
   }
 }
 
-setupUi()
-render()
+document.getElementById('gl-canvas').onmousemove = (e: MouseEvent) => {
+  if (!e.which) {
+    return
+  }
+  const sensitivity = 0.1
+  let xoffset = e.movementX / 10
+  let yoffset = e.movementY / 10
+
+  xoffset += sensitivity
+  yoffset += sensitivity
+
+  yaw += xoffset
+  pitch += yoffset
+
+  if (pitch > 89) {
+    pitch = 89
+  }
+
+  if (pitch < -89) {
+    pitch = -89
+  }
+
+  cameraFront = vec3.normalize(vec3.create(), [
+    Math.cos(glMatrix.toRadian(yaw)) * Math.cos(glMatrix.toRadian(pitch)),
+    Math.sin(glMatrix.toRadian(pitch)),
+    Math.sin(glMatrix.toRadian(yaw)) * Math.cos(glMatrix.toRadian(pitch))
+  ])
+}
+
+document.getElementById('gl-canvas').onmousewheel = (e: MouseWheelEvent) => {
+  if (fov >= 1 && fov <= 60) {
+    fov -= e.wheelDeltaY / 120
+  }
+  if (fov <= 1) {
+    fov = 1
+  }
+  if (fov >= 60) {
+    fov = 60
+  }
+}
