@@ -4,53 +4,56 @@ import keycode from 'keycode'
 import Shader from './shader'
 import vs from './shaders/vs'
 import fs from './shaders/fs'
+import lightVs from './shaders/lightVs'
+import lightFs from './shaders/lightFs'
 
 const gl = (window as any).gl = setupContext('#gl-canvas', 800, 600)
 const shader = new Shader(gl, vs, fs)
-shader.use()
+const lightShader = new Shader(gl, lightVs, lightFs)
 
 const vertices = [
-  -0.5, -0.5, -0.5,  0.0, 0.0,
-  0.5, -0.5, -0.5,  1.0, 0.0,
-  0.5,  0.5, -0.5,  1.0, 1.0,
-  0.5,  0.5, -0.5,  1.0, 1.0,
-  -0.5,  0.5, -0.5,  0.0, 1.0,
-  -0.5, -0.5, -0.5,  0.0, 0.0,
+  -0.5, -0.5, -0.5,  0.0,  0.0, -1.0,
+  0.5, -0.5, -0.5,  0.0,  0.0, -1.0,
+  0.5,  0.5, -0.5,  0.0,  0.0, -1.0,
+  0.5,  0.5, -0.5,  0.0,  0.0, -1.0,
+  -0.5,  0.5, -0.5,  0.0,  0.0, -1.0,
+  -0.5, -0.5, -0.5,  0.0,  0.0, -1.0,
 
-  -0.5, -0.5,  0.5,  0.0, 0.0,
-  0.5, -0.5,  0.5,  1.0, 0.0,
-  0.5,  0.5,  0.5,  1.0, 1.0,
-  0.5,  0.5,  0.5,  1.0, 1.0,
-  -0.5,  0.5,  0.5,  0.0, 1.0,
-  -0.5, -0.5,  0.5,  0.0, 0.0,
+  -0.5, -0.5,  0.5,  0.0,  0.0, 1.0,
+  0.5, -0.5,  0.5,  0.0,  0.0, 1.0,
+  0.5,  0.5,  0.5,  0.0,  0.0, 1.0,
+  0.5,  0.5,  0.5,  0.0,  0.0, 1.0,
+  -0.5,  0.5,  0.5,  0.0,  0.0, 1.0,
+  -0.5, -0.5,  0.5,  0.0,  0.0, 1.0,
 
-  -0.5,  0.5,  0.5,  1.0, 0.0,
-  -0.5,  0.5, -0.5,  1.0, 1.0,
-  -0.5, -0.5, -0.5,  0.0, 1.0,
-  -0.5, -0.5, -0.5,  0.0, 1.0,
-  -0.5, -0.5,  0.5,  0.0, 0.0,
-  -0.5,  0.5,  0.5,  1.0, 0.0,
+  -0.5,  0.5,  0.5, -1.0,  0.0,  0.0,
+  -0.5,  0.5, -0.5, -1.0,  0.0,  0.0,
+  -0.5, -0.5, -0.5, -1.0,  0.0,  0.0,
+  -0.5, -0.5, -0.5, -1.0,  0.0,  0.0,
+  -0.5, -0.5,  0.5, -1.0,  0.0,  0.0,
+  -0.5,  0.5,  0.5, -1.0,  0.0,  0.0,
 
-  0.5,  0.5,  0.5,  1.0, 0.0,
-  0.5,  0.5, -0.5,  1.0, 1.0,
-  0.5, -0.5, -0.5,  0.0, 1.0,
-  0.5, -0.5, -0.5,  0.0, 1.0,
-  0.5, -0.5,  0.5,  0.0, 0.0,
-  0.5,  0.5,  0.5,  1.0, 0.0,
+  0.5,  0.5,  0.5,  1.0,  0.0,  0.0,
+  0.5,  0.5, -0.5,  1.0,  0.0,  0.0,
+  0.5, -0.5, -0.5,  1.0,  0.0,  0.0,
+  0.5, -0.5, -0.5,  1.0,  0.0,  0.0,
+  0.5, -0.5,  0.5,  1.0,  0.0,  0.0,
+  0.5,  0.5,  0.5,  1.0,  0.0,  0.0,
 
-  -0.5, -0.5, -0.5,  0.0, 1.0,
-  0.5, -0.5, -0.5,  1.0, 1.0,
-  0.5, -0.5,  0.5,  1.0, 0.0,
-  0.5, -0.5,  0.5,  1.0, 0.0,
-  -0.5, -0.5,  0.5,  0.0, 0.0,
-  -0.5, -0.5, -0.5,  0.0, 1.0,
+  -0.5, -0.5, -0.5,  0.0, -1.0,  0.0,
+  0.5, -0.5, -0.5,  0.0, -1.0,  0.0,
+  0.5, -0.5,  0.5,  0.0, -1.0,  0.0,
+  0.5, -0.5,  0.5,  0.0, -1.0,  0.0,
+  -0.5, -0.5,  0.5,  0.0, -1.0,  0.0,
+  -0.5, -0.5, -0.5,  0.0, -1.0,  0.0,
 
-  -0.5,  0.5, -0.5,  0.0, 1.0,
-  0.5,  0.5, -0.5,  1.0, 1.0,
-  0.5,  0.5,  0.5,  1.0, 0.0,
-  0.5,  0.5,  0.5,  1.0, 0.0,
-  -0.5,  0.5,  0.5,  0.0, 0.0,
-  -0.5,  0.5, -0.5,  0.0, 1.0
+  -0.5,  0.5, -0.5,  0.0,  1.0,  0.0,
+  0.5,  0.5, -0.5,  0.0,  1.0,  0.0,
+  0.5,  0.5,  0.5,  0.0,  1.0,  0.0,
+  0.5,  0.5,  0.5,  0.0,  1.0,  0.0,
+  -0.5,  0.5,  0.5,  0.0,  1.0,  0.0,
+  -0.5,  0.5, -0.5,  0.0,  1.0,  0.0
+
 ]
 
 const cubePosition = [
@@ -66,6 +69,7 @@ const cubePosition = [
   [-1.3,  1.0, -1.5]
 ]
 
+
 const texCoords = [
   0, 0,
   1, 0,
@@ -74,21 +78,30 @@ const texCoords = [
 
 const vbo = gl.createBuffer()
 const vao = gl.createVertexArray()
+const lightVao = gl.createVertexArray()
 gl.bindVertexArray(vao)
 
 gl.bindBuffer(gl.ARRAY_BUFFER, vbo)
 gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW)
 
-gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 5 * Float32Array.BYTES_PER_ELEMENT, 0)
+gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 6 * Float32Array.BYTES_PER_ELEMENT, 0)
 gl.enableVertexAttribArray(0)
 
-gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 5 * Float32Array.BYTES_PER_ELEMENT, 3 * Float32Array.BYTES_PER_ELEMENT)
+gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 6 * Float32Array.BYTES_PER_ELEMENT, 3 * Float32Array.BYTES_PER_ELEMENT)
 gl.enableVertexAttribArray(1)
+
+gl.bindVertexArray(lightVao)
+
+gl.bindBuffer(gl.ARRAY_BUFFER, vbo)
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW)
+
+gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 6 * Float32Array.BYTES_PER_ELEMENT, 0)
+gl.enableVertexAttribArray(0)
 
 // gl.vertexAttribPointer(2, 2, gl.FLOAT, false, 8 * Float32Array.BYTES_PER_ELEMENT, 6 * Float32Array.BYTES_PER_ELEMENT)
 // gl.enableVertexAttribArray(2)
 
-gl.clearColor(0.2, 0.3, 0.3, 1)
+gl.clearColor(0.1, 0.1, 0.1, 1)
 gl.enable(gl.DEPTH_TEST)
 gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
@@ -120,12 +133,13 @@ let lastFrame = 0
 let firstMouse = true
 let yaw = -90
 let pitch = 0
-let lastX = width / 2
-let lastY = height / 2
 let fov = 45
+
+let lightPos = vec3.fromValues(1.2, 0, 2)
 
 function render () {
   const now = Date.now() / 1000
+  lightPos = vec3.rotateY(vec3.create(), lightPos, [0, lightPos[1], 0], 0.01)
   deltaTime = now - lastFrame
   lastFrame = now
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
@@ -133,17 +147,32 @@ function render () {
   view = mat4.lookAt(mat4.create(), cameraPos, vec3.add(vec3.create(), cameraPos, cameraFront), cameraUp)
   projection = mat4.perspective(mat4.create(), glMatrix.toRadian(fov), width / height, 0.1, 100)
 
+  gl.bindVertexArray(vao)
+  shader.use()
+  shader.setVec3('objectColor', [1, 0.5, 0.31])
+  shader.setVec3('lightColor', [1, 1, 1])
+  shader.setVec3('lightPos', lightPos)
+  shader.setVec3('viewPos', cameraPos)
   shader.setMatrix4fv('view', view)
   shader.setMatrix4fv('projection', projection)
-  for (let i = 0; i < cubePosition.length; i++) {
+  for (let i = 0; i < 1; i++) {
     model = mat4.create()
     model = mat4.translate(model, model, cubePosition[i])
-    const angle = 20 * i * now
-    model = mat4.rotate(model, model, glMatrix.toRadian(angle), [1, 0.3, 0.5])
+
     shader.setMatrix4fv('model', model)
 
-    gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 5)
+    gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 6)
   }
+
+  gl.bindVertexArray(lightVao)
+  lightShader.use()
+  lightShader.setMatrix4fv('view', view)
+  lightShader.setMatrix4fv('projection', projection)
+  model = mat4.fromTranslation(mat4.create(), lightPos)
+  model = mat4.scale(model, model, [0.2, 0.2, 0.2])
+  lightShader.setMatrix4fv('model', model)
+  gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 6)
+
   requestAnimationFrame(render)
 }
 

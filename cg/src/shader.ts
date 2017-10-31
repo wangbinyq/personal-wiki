@@ -30,7 +30,11 @@ export default class Shader {
     this.gl.uniform1f(this.getUniformLocation(name), value)
   }
 
-  setMatrix4fv (name: string, value: Float32Array | [number]) {
+  setVec3 (name: string, value: Float32Array | number[]) {
+    this.gl.uniform3fv(this.getUniformLocation(name), value)
+  }
+
+  setMatrix4fv (name: string, value: Float32Array | number[]) {
     this.gl.uniformMatrix4fv(this.getUniformLocation(name), false, value)
   }
 }
