@@ -18,6 +18,7 @@ module.exports = {
   plugins: [
     new CheckerPlugin()
   ],
+  devtool: "inline-source-map",
   devServer: {
     port: 10001
   }

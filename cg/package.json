@@ -13,7 +13,11 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "@types/gl-matrix": "^2.3.2",
+    "gl-matrix": "^2.4.0",
+    "keycode": "^2.1.9"
+  },
   "devDependencies": {
     "@types/webgl2": "0.0.2",
     "awesome-typescript-loader": "^3.2.3",
