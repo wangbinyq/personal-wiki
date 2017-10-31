@@ -5,17 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>cg demo</title>
-  <style>
-    .hide {
-      display: none;
-    }
-  </style>
+  <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
   <div class="hide">
-    <img id="wall" src="src/texture/wall.jpg" alt="">
+    <img id="wall" src="src/textures/wall.jpg" alt="">
   </div>
   <canvas id="gl-canvas" width=800 height=600></canvas>
+  <div class="button-group">
+    <button class="btn btn-default" id="far">+</button>
+    <button class="btn btn-default" id="near">-</button>
+    <button class="btn btn-default" id="left">←</button>
+    <button class="btn btn-default" id="up">↑</button>
+    <button class="btn btn-default" id="right">→</button>
+    <button class="btn btn-default" id="down">↓</button>
+  </div>
   <script src="bundle.js"></script>
 </body>
 </html>
