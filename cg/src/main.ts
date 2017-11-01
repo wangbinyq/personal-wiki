@@ -152,6 +152,9 @@ function render () {
   shader.setVec3('light.ambient', ambientColor)
   shader.setVec3('light.diffuse', diffuseColor)
   shader.setVec3('light.specular', [1.0, 1.0, 1.0])
+  shader.setFloat('light.constant', 1.0)
+  shader.setFloat('light.linear', 0.09)
+  shader.setFloat('light.quadratic', 0.032)
 
   shader.setVec3('material.ambient', [1.0, 0.5, 0.31])
   shader.setInt('material.diffuse', 2)
