@@ -14,47 +14,48 @@ const width = 800
 const height = 600
 
 const vertices = [
-  -0.5, -0.5, -0.5,  0.0,  0.0, -1.0,
-  0.5, -0.5, -0.5,  0.0,  0.0, -1.0,
-  0.5,  0.5, -0.5,  0.0,  0.0, -1.0,
-  0.5,  0.5, -0.5,  0.0,  0.0, -1.0,
-  -0.5,  0.5, -0.5,  0.0,  0.0, -1.0,
-  -0.5, -0.5, -0.5,  0.0,  0.0, -1.0,
+  // positions          // normals           // texture coords
+  -0.5, -0.5, -0.5,  0.0,  0.0, -1.0,  0.0,  0.0,
+  0.5, -0.5, -0.5,  0.0,  0.0, -1.0,  1.0,  0.0,
+  0.5,  0.5, -0.5,  0.0,  0.0, -1.0,  1.0,  1.0,
+  0.5,  0.5, -0.5,  0.0,  0.0, -1.0,  1.0,  1.0,
+  -0.5,  0.5, -0.5,  0.0,  0.0, -1.0,  0.0,  1.0,
+  -0.5, -0.5, -0.5,  0.0,  0.0, -1.0,  0.0,  0.0,
 
-  -0.5, -0.5,  0.5,  0.0,  0.0, 1.0,
-  0.5, -0.5,  0.5,  0.0,  0.0, 1.0,
-  0.5,  0.5,  0.5,  0.0,  0.0, 1.0,
-  0.5,  0.5,  0.5,  0.0,  0.0, 1.0,
-  -0.5,  0.5,  0.5,  0.0,  0.0, 1.0,
-  -0.5, -0.5,  0.5,  0.0,  0.0, 1.0,
+  -0.5, -0.5,  0.5,  0.0,  0.0,  1.0,  0.0,  0.0,
+  0.5, -0.5,  0.5,  0.0,  0.0,  1.0,  1.0,  0.0,
+  0.5,  0.5,  0.5,  0.0,  0.0,  1.0,  1.0,  1.0,
+  0.5,  0.5,  0.5,  0.0,  0.0,  1.0,  1.0,  1.0,
+  -0.5,  0.5,  0.5,  0.0,  0.0,  1.0,  0.0,  1.0,
+  -0.5, -0.5,  0.5,  0.0,  0.0,  1.0,  0.0,  0.0,
 
-  -0.5,  0.5,  0.5, -1.0,  0.0,  0.0,
-  -0.5,  0.5, -0.5, -1.0,  0.0,  0.0,
-  -0.5, -0.5, -0.5, -1.0,  0.0,  0.0,
-  -0.5, -0.5, -0.5, -1.0,  0.0,  0.0,
-  -0.5, -0.5,  0.5, -1.0,  0.0,  0.0,
-  -0.5,  0.5,  0.5, -1.0,  0.0,  0.0,
+  -0.5,  0.5,  0.5, -1.0,  0.0,  0.0,  1.0,  0.0,
+  -0.5,  0.5, -0.5, -1.0,  0.0,  0.0,  1.0,  1.0,
+  -0.5, -0.5, -0.5, -1.0,  0.0,  0.0,  0.0,  1.0,
+  -0.5, -0.5, -0.5, -1.0,  0.0,  0.0,  0.0,  1.0,
+  -0.5, -0.5,  0.5, -1.0,  0.0,  0.0,  0.0,  0.0,
+  -0.5,  0.5,  0.5, -1.0,  0.0,  0.0,  1.0,  0.0,
 
-  0.5,  0.5,  0.5,  1.0,  0.0,  0.0,
-  0.5,  0.5, -0.5,  1.0,  0.0,  0.0,
-  0.5, -0.5, -0.5,  1.0,  0.0,  0.0,
-  0.5, -0.5, -0.5,  1.0,  0.0,  0.0,
-  0.5, -0.5,  0.5,  1.0,  0.0,  0.0,
-  0.5,  0.5,  0.5,  1.0,  0.0,  0.0,
+  0.5,  0.5,  0.5,  1.0,  0.0,  0.0,  1.0,  0.0,
+  0.5,  0.5, -0.5,  1.0,  0.0,  0.0,  1.0,  1.0,
+  0.5, -0.5, -0.5,  1.0,  0.0,  0.0,  0.0,  1.0,
+  0.5, -0.5, -0.5,  1.0,  0.0,  0.0,  0.0,  1.0,
+  0.5, -0.5,  0.5,  1.0,  0.0,  0.0,  0.0,  0.0,
+  0.5,  0.5,  0.5,  1.0,  0.0,  0.0,  1.0,  0.0,
 
-  -0.5, -0.5, -0.5,  0.0, -1.0,  0.0,
-  0.5, -0.5, -0.5,  0.0, -1.0,  0.0,
-  0.5, -0.5,  0.5,  0.0, -1.0,  0.0,
-  0.5, -0.5,  0.5,  0.0, -1.0,  0.0,
-  -0.5, -0.5,  0.5,  0.0, -1.0,  0.0,
-  -0.5, -0.5, -0.5,  0.0, -1.0,  0.0,
+  -0.5, -0.5, -0.5,  0.0, -1.0,  0.0,  0.0,  1.0,
+  0.5, -0.5, -0.5,  0.0, -1.0,  0.0,  1.0,  1.0,
+  0.5, -0.5,  0.5,  0.0, -1.0,  0.0,  1.0,  0.0,
+  0.5, -0.5,  0.5,  0.0, -1.0,  0.0,  1.0,  0.0,
+  -0.5, -0.5,  0.5,  0.0, -1.0,  0.0,  0.0,  0.0,
+  -0.5, -0.5, -0.5,  0.0, -1.0,  0.0,  0.0,  1.0,
 
-  -0.5,  0.5, -0.5,  0.0,  1.0,  0.0,
-  0.5,  0.5, -0.5,  0.0,  1.0,  0.0,
-  0.5,  0.5,  0.5,  0.0,  1.0,  0.0,
-  0.5,  0.5,  0.5,  0.0,  1.0,  0.0,
-  -0.5,  0.5,  0.5,  0.0,  1.0,  0.0,
-  -0.5,  0.5, -0.5,  0.0,  1.0,  0.0
+  -0.5,  0.5, -0.5,  0.0,  1.0,  0.0,  0.0,  1.0,
+  0.5,  0.5, -0.5,  0.0,  1.0,  0.0,  1.0,  1.0,
+  0.5,  0.5,  0.5,  0.0,  1.0,  0.0,  1.0,  0.0,
+  0.5,  0.5,  0.5,  0.0,  1.0,  0.0,  1.0,  0.0,
+  -0.5,  0.5,  0.5,  0.0,  1.0,  0.0,  0.0,  0.0,
+  -0.5,  0.5, -0.5,  0.0,  1.0,  0.0,  0.0,  1.0
 
 ]
 
@@ -79,18 +80,21 @@ gl.bindVertexArray(vao)
 gl.bindBuffer(gl.ARRAY_BUFFER, vbo)
 gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW)
 
-gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 6 * Float32Array.BYTES_PER_ELEMENT, 0)
+gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 8 * Float32Array.BYTES_PER_ELEMENT, 0)
 gl.enableVertexAttribArray(0)
 
-gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 6 * Float32Array.BYTES_PER_ELEMENT, 3 * Float32Array.BYTES_PER_ELEMENT)
+gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 8 * Float32Array.BYTES_PER_ELEMENT, 3 * Float32Array.BYTES_PER_ELEMENT)
 gl.enableVertexAttribArray(1)
+
+gl.vertexAttribPointer(2, 2, gl.FLOAT, false, 8 * Float32Array.BYTES_PER_ELEMENT, 6 * Float32Array.BYTES_PER_ELEMENT)
+gl.enableVertexAttribArray(2)
 
 gl.bindVertexArray(lightVao)
 
 gl.bindBuffer(gl.ARRAY_BUFFER, vbo)
 gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW)
 
-gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 6 * Float32Array.BYTES_PER_ELEMENT, 0)
+gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 8 * Float32Array.BYTES_PER_ELEMENT, 0)
 gl.enableVertexAttribArray(0)
 
 // gl.vertexAttribPointer(2, 2, gl.FLOAT, false, 8 * Float32Array.BYTES_PER_ELEMENT, 6 * Float32Array.BYTES_PER_ELEMENT)
@@ -102,6 +106,8 @@ gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
 const texture1 = setupTexture(gl, '#container', 0)
 const texture2 = setupTexture(gl, '#wall', 1)
+const container2 = setupTexture(gl, '#container2', 2)
+const container2Specular = setupTexture(gl, '#container2_specular', 3)
 
 shader.setInt('texture2', 1)
 
@@ -119,11 +125,11 @@ let yaw = -90
 let pitch = 0
 let fov = 45
 
-let lightPos = vec3.fromValues(1.2, 1, 2)
+let lightPos = vec3.fromValues(1.2, 0, 2)
 
 function render () {
   const now = Date.now() / 1000
-  lightPos = vec3.rotateY(vec3.create(), lightPos, [0, lightPos[1], 0], 0.01)
+  // lightPos = vec3.rotateY(vec3.create(), lightPos, [0, lightPos[1], 0], 0.01)
   deltaTime = now - lastFrame
   lastFrame = now
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
@@ -137,9 +143,7 @@ function render () {
   shader.setVec3('viewPos', cameraPos)
 
   const lightColor = vec3.fromValues(
-    Math.sin(now * 2),
-    Math.sin(now * 0.7),
-    Math.sin(now * 1.3)
+    1, 1, 1
   )
   const diffuseColor = vec3.mul(vec3.create(), lightColor, vec3.fromValues(0.5, 0.5, 0.5))
   const ambientColor = vec3.mul(vec3.create(), diffuseColor, vec3.fromValues(0.2, 0.2, 0.2))
@@ -148,9 +152,9 @@ function render () {
   shader.setVec3('light.specular', [1.0, 1.0, 1.0])
 
   shader.setVec3('material.ambient', [1.0, 0.5, 0.31])
-  shader.setVec3('material.diffuse', [1.0, 0.5, 0.31])
-  shader.setVec3('material.specular', [0.5, 0.5, 0.5]) // specular lighting doesn't have full effect on this object's material
-  shader.setFloat('material.shininess', 32.0)
+  shader.setInt('material.diffuse', 2)
+  shader.setInt('material.specular', 3)
+  shader.setFloat('material.shininess', 64.0)
 
   shader.setMatrix4fv('view', view)
   shader.setMatrix4fv('projection', projection)
@@ -160,7 +164,7 @@ function render () {
 
     shader.setMatrix4fv('model', model)
 
-    gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 6)
+    gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 8)
   }
 
   gl.bindVertexArray(lightVao)
@@ -170,7 +174,7 @@ function render () {
   model = mat4.fromTranslation(mat4.create(), lightPos)
   model = mat4.scale(model, model, [0.2, 0.2, 0.2])
   lightShader.setMatrix4fv('model', model)
-  gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 6)
+  gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 8)
 
   requestAnimationFrame(render)
 }
