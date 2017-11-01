@@ -4,7 +4,8 @@ const { CheckerPlugin } = require('awesome-typescript-loader')
 module.exports = {
   entry: {
     webgl: "./src/webgl.ts",
-    three: "./src/t.ts"
+    three: "./src/t.ts",
+    soft: "./entry/soft.ts"
   },
   output: {
     filename: "[name].js",
@@ -24,6 +25,7 @@ module.exports = {
   ],
   devtool: "inline-source-map",
   devServer: {
+    contentBase: path.join(__dirname, 'public'),
     port: 10001
   }
 }
