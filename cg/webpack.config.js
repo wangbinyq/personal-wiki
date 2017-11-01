@@ -2,9 +2,13 @@ var path = require("path")
 const { CheckerPlugin } = require('awesome-typescript-loader')
 
 module.exports = {
-  entry: "./src/main.ts",
+  entry: {
+    webgl: "./src/webgl.ts",
+    three: "./src/t.ts"
+  },
   output: {
-    filename: "bundle.js"
+    filename: "[name].js",
+    path: __dirname + '/dist'
   },
   resolve: {
     extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js", ".vert", ".frag", ".glsl"]

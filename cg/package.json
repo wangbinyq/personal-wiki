@@ -15,8 +15,10 @@
   "license": "ISC",
   "dependencies": {
     "@types/gl-matrix": "^2.3.2",
+    "@types/three": "^0.84.28",
     "gl-matrix": "^2.4.0",
-    "keycode": "^2.1.9"
+    "keycode": "^2.1.9",
+    "three": "^0.87.1"
   },
   "devDependencies": {
     "@types/webgl2": "0.0.2",
