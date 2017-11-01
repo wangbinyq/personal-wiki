@@ -126,6 +126,7 @@ let pitch = 0
 let fov = 45
 
 let lightPos = vec3.fromValues(1.2, 0, 2)
+let lightDir = vec3.fromValues(1.2, -1, 2)
 
 function render () {
   const now = Date.now() / 1000
@@ -140,13 +141,14 @@ function render () {
   gl.bindVertexArray(vao)
   shader.use()
   shader.setVec3('light.position', lightPos)
+  shader.setVec3('light.direction', lightDir)
   shader.setVec3('viewPos', cameraPos)
 
   const lightColor = vec3.fromValues(
     1, 1, 1
   )
   const diffuseColor = vec3.mul(vec3.create(), lightColor, vec3.fromValues(0.5, 0.5, 0.5))
-  const ambientColor = vec3.mul(vec3.create(), diffuseColor, vec3.fromValues(0.2, 0.2, 0.2))
+  const ambientColor = vec3.mul(vec3.create(), diffuseColor, vec3.fromValues(0.5, 0.5, 0.5))
   shader.setVec3('light.ambient', ambientColor)
   shader.setVec3('light.diffuse', diffuseColor)
   shader.setVec3('light.specular', [1.0, 1.0, 1.0])
@@ -158,9 +160,11 @@ function render () {
 
   shader.setMatrix4fv('view', view)
   shader.setMatrix4fv('projection', projection)
-  for (let i = 0; i < 1; i++) {
-    model = mat4.create()
-    model = mat4.translate(model, model, cubePosition[i])
+  for (let i = 0; i < cubePosition.length; i++) {
+    model = mat4.fromTranslation(mat4.create(), cubePosition[i])
+
+    const angle = 20 * i * now
+    model = mat4.rotate(model, model, glMatrix.toRadian(angle), [1, 0.3, 0.5])
 
     shader.setMatrix4fv('model', model)
 
