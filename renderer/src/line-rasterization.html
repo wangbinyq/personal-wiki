@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Line rasterization</title>
+</head>
+<body>
+  <canvas id="canvas" width="800" height="600"></canvas>
+  <select id="lineMethod">
+    <option value="line" selected>line draw</option>
+    <option value="dda">dda</option>
+    <option value="bresenham">Bresenham's</option>
+    <option value="ctxLine">cavas</option>
+  </select>
+  <label for="dot">
+    dot
+    <input type="checkbox" name="" id="dot" checked>
+  </label>
+  <label for="ceil">
+      ceil
+      <input type="checkbox" name="" id="ceil" checked>
+    </label>
+  <script>
+    const pointSize = 1
+    const canvas = document.getElementById('canvas')
+    const ctx = canvas.getContext('2d')
+    ctx.fillStyle = ''
+
+    function dot(x, y, color='#000') {
+      if (document.getElementById('dot').checked) {
+        if (document.getElementById('ceil').checked) {
+          x = Math.ceil(x)
+          y = Math.ceil(y)
+        } else {
+          x = Math.floor(x)
+          y = Math.floor(y)          
+        }
+      }
+      ctx.fillStyle = color
+      if (x * pointSize > canvas.width || 
+        y * pointSize > canvas.height) {
+          return
+      }
+      ctx.fillRect(x * pointSize, y * pointSize, pointSize, pointSize)
+    }
+
+    function line(x1, y1, x2, y2) {
+      const dx = x2 - x1
+      const dy = y2 - y1
+
+      let x = x1
+      while (Math.abs(x - x2) > 1) {
+        y = (y1 + dy * (x - x1) / dx)
+        dot(x, y)
+        if (x1 < x2) {
+          x = x + 1
+        } else {
+          x = x - 1
+        }
+      }
+    }
+
+    function ctxLine(x1, y1, x2, y2) {
+      ctx.beginPath()
+      ctx.moveTo(x1, y1)
+      ctx.lineTo(x2, y2)
+      ctx.stroke()
+    }
+
+    function dda(x1, y1, x2, y2) {
+      const m = (y2 - y1) / (x2 - x1)
+      let x = x1
+      let y = y1
+
+      while (x < x2 || y < y2) {
+        dot(x, y)
+        if (m <= 1) {
+          x = x + 1
+          y = y + m
+        } else {
+          x = x + 1 / m
+          y = y + 1
+        }
+      }
+    }
+
+    function bresenham(x1, y1, x2, y2) {
+
+      function sign(x) {
+        return x === 0 ? 0 : (x > 0 ? 1 : -1)
+      }
+
+      const dx = x2 - x1
+      const dy = y2 - y1
+      const de = Math.abs(dy / dx)
+
+      let x = x1
+      let y = y1
+      let error = 0
+      while (x <= x2) {
+        dot(x, y)
+        error += de
+
+        while (error >= 0.5) {
+          y = y + sign(de)
+          error = error - 1
+        }
+
+        x += 1
+      }
+    }
+
+    function animate () {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      const select = document.getElementById('lineMethod')
+      const methodName = select.options[select.selectedIndex].value
+      const lineMethod = window[methodName]
+      for(let y = 0; y < canvas.height / pointSize; y += 20) {
+        lineMethod && lineMethod(canvas.width, y, 0, 0)
+      }
+
+      requestAnimationFrame(animate)
+    }
+
+    animate()
+  </script>
+</body>
+</html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Triangle rasterization</title>
+</head>
+<body>
+  <canvas id="canvas" width="800" height="600"></canvas>
+  <select id="lineMethod">
+    <option value="line" selected>line draw</option>
+    <option value="dda">dda</option>
+    <option value="bresenham">Bresenham's</option>
+    <option value="ctxLine">cavas</option>
+  </select>
+  <label for="dot">
+    dot
+    <input type="checkbox" name="" id="dot" checked>
+  </label>
+  <label for="ceil">
+      ceil
+      <input type="checkbox" name="" id="ceil" checked>
+  </label>
+  <label for="rotate">
+      rotate
+      <input type="checkbox" name="" id="rotate" checked>
+  </label>
+  <script>
+    const pointSize = 1
+    const canvas = document.getElementById('canvas')
+    const ctx = canvas.getContext('2d')
+    ctx.fillStyle = ''
+
+    function dot(x, y, color='#000') {
+      if (document.getElementById('dot').checked) {
+        if (document.getElementById('ceil').checked) {
+          x = Math.ceil(x)
+          y = Math.ceil(y)
+        } else {
+          x = Math.floor(x)
+          y = Math.floor(y)          
+        }
+      }
+      ctx.fillStyle = color
+      if (x * pointSize > canvas.width || 
+        y * pointSize > canvas.height) {
+          return
+      }
+      ctx.fillRect(x * pointSize, y * pointSize, pointSize, pointSize)
+    }
+
+    function line(x1, y1, x2, y2) {
+      const dx = x2 - x1
+      const dy = y2 - y1
+
+      let x = x1
+      while (Math.abs(x - x2) > 1) {
+        y = (y1 + dy * (x - x1) / dx)
+        dot(x, y)
+        if (x1 < x2) {
+          x = x + 1
+        } else {
+          x = x - 1
+        }
+      }
+    }
+
+    function ctxLine(x1, y1, x2, y2) {
+      ctx.beginPath()
+      ctx.moveTo(x1, y1)
+      ctx.lineTo(x2, y2)
+      ctx.stroke()
+    }
+
+    function dda(x1, y1, x2, y2) {
+      if (x2 < x1) {
+        [x1, x2] = [x2, x1]
+        [y1, y2] = [y2, y1]
+      }
+      const m = (y2 - y1) / (x2 - x1)
+      let x = x1
+      let y = y1
+
+      while (x < x2 || y < y2) {
+        dot(x, y)
+        if (m <= 1) {
+          x = x + 1
+          y = y + m
+        } else {
+          x = x + 1 / m
+          y = y + 1
+        }
+      }
+    }
+
+    function bresenham(x1, y1, x2, y2) {
+
+      function sign(x) {
+        return x === 0 ? 0 : (x > 0 ? 1 : -1)
+      }
+
+      const dx = x2 - x1
+      const dy = y2 - y1
+      const de = Math.abs(dy / dx)
+
+      let x = x1
+      let y = y1
+      let error = 0
+      while (x <= x2) {
+        dot(x, y)
+        error += de
+
+        while (error >= 0.5) {
+          y = y + sign(de)
+          error = error - 1
+        }
+
+        x += 1
+      }
+    }
+
+    class Vec2 {
+      constructor (x, y) {
+        if (x instanceof Vec2) {
+          this.x = x.x
+          this.y = x.y
+        } else if (x instanceof Array) {
+          this.x = x[0]
+          this.y = x[1]
+        } else if (typeof x === 'number' && y === undefined) {
+          this.x = x
+          this.y = x
+        } else {
+          this.x = x
+          this.y = y
+        }
+      }
+
+      length () {
+        return Math.sqrt(this.x * this.x + this.y * this.y)
+      }
+
+      normalize () {
+        return this.div(this.length)
+      }
+
+      map2 (f, x, y) {
+        if (x instanceof Vec2) {
+          return new Vec2(f(this.x, x.x), f(this.y, x.y),)
+        } else if (x instanceof Array) {
+          return new Vec2(f(this.x, x[0]), f(this.y, x[1]))
+        } else if (typeof x === 'number' && y === undefined) {
+          return new Vec2(f(this.x, x), f(this.y, x))
+        } else {
+          return new Vec2(f(this.x, x), f(this.y, y))
+        }        
+      }
+
+      add(x, y) {
+        return this.map2((a, b) => a + b, x, y)
+      }
+
+      sub(x, y) {
+        return this.map2((a, b) => a - b, x, y)
+      }
+
+      mul(x, y) {
+        return this.map2((a, b) => a * b, x, y)
+      }
+
+      div(x, y) {
+        return this.map2((a, b) => a / b, x, y)
+      }
+
+      rotate (o, degree) {
+        const rad = degree * Math.PI / 90
+        const p = this.sub(o)
+
+        const r = new Vec2(p.x * Math.cos(rad) - p.y * Math.sin(rad), p.y * Math.cos(rad) + p.x * Math.sin(rad))
+
+        return r.add(o) 
+      }
+
+      draw () {
+        dot(this.x, this.y)
+      }
+
+      toString () {
+        return `Point<${this.x}, ${this.y}>`
+      }
+    }
+
+    function close (a, b, e = 0.01) {
+      return Math.abs(a - b) < e
+    }
+
+    class Triangle {
+      constructor (a, b, c) {
+        [this.v1, this.v2, this.v3] = [a, b, c].sort((a, b) => a.y - b.y)
+        this.v4 = new Vec2(
+          this.v1.x + (this.v2.y - this.v1.y) / (this.v3.y - this.v1.y) * (this.v3.x - this.v1.x),
+          this.v2.y
+        )
+      }
+
+      fill () {
+        if (close(this.v2.y, this.v3.y)) {
+          this.fillBottomFlatTriangle(this.v1, this.v2, this.v3)
+        } else if (close(this.v1.y, this.v2.y)) {
+          this.fillTopFlatTriangle(this.v1, this.v2, this.v3)
+        } else {
+          this.fillBottomFlatTriangle(this.v1, this.v2, this.v4)
+          lineMethod(this.v2.x, this.v2.y, this.v4.x, this.v4.y)
+          this.fillTopFlatTriangle(this.v2, this.v4, this.v3)
+        }
+      }
+
+      fillBottomFlatTriangle (v1, v2, v3) {
+        const invslop1 = (v2.x - v1.x) / (v2.y - v1.y)
+        const invslop2 = (v3.x - v1.x) / (v3.y - v1.y)
+
+        let curx1 = v1.x
+        let curx2 = v1.x
+
+        for (let scanlineY = v1.y; scanlineY <= v2.y; scanlineY++) {
+          lineMethod(curx1, scanlineY, curx2, scanlineY)
+          curx1 += invslop1
+          curx2 += invslop2
+        }
+      }
+
+      fillTopFlatTriangle (v1, v2, v3) {
+        const invslop1 = (v3.x - v1.x) / (v3.y - v1.y)
+        const invslop2 = (v3.x - v2.x) / (v3.y - v2.y)
+
+        let curx1 = v3.x
+        let curx2 = v3.x
+
+        for (let scanlineY = v3.y; scanlineY > v1.y; scanlineY--) {
+          lineMethod(curx1, scanlineY, curx2, scanlineY)
+          curx1 -= invslop1
+          curx2 -= invslop2
+        }
+      }
+
+      drawVec () {
+        this.v1.draw()
+        this.v2.draw()
+        this.v3.draw()
+        this.v4.draw()
+      }
+
+      map (f) {
+        return new Triangle(f(this.v1), f(this.v2), f(this.v3))
+      }
+
+      rotate (o, degree) {
+        return this.map((v) => v.rotate(o, degree))
+      }
+    }
+
+    let rotate = 30
+    let lastTime = Date.now() / 1000
+    let lineMethod = line
+
+    function animate () {
+      const now = Date.now() / 1000
+      const delta = now - lastTime
+      lastTime = now
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      
+      const a = new Vec2(400, 200)
+      const b = new Vec2(300, 350)
+      const c = new Vec2(500, 350)
+
+      const t = new Triangle(a, b, c)
+      t.rotate([400, 300], rotate).fill()
+      t.rotate([400, 300], rotate).drawVec()
+
+      if (document.getElementById('rotate').checked) {
+        rotate += 0.5
+      }
+
+      requestAnimationFrame(animate)
+    }
+
+    animate()
+  </script>
+</body>
+</html>
