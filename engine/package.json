@@ -7,7 +7,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "jest",
+    "test": "jest --watch --notify",
     "start": "webpack-dev-server"
   },
   "keywords": [],

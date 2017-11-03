@@ -1,5 +1,7 @@
-export default class Loader {
-  parse () {
+interface Loader {
 
-  }
+}
+
+export class ObjLoader implements Loader {
+
 }

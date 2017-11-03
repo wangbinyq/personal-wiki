@@ -1,1 +1,5 @@
-import Loader from '../src/loader'
+import { ObjLoader } from '../src/loader'
+
+test('obj loader', () => {
+  const obj = new ObjLoader()
+})
