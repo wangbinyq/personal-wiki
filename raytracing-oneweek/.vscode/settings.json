@@ -1,0 +1,9 @@
+{
+  "files.associations": {
+    "*.postcss": "postcss",
+    "*.tpl": "html",
+    "*.sbt": "scala",
+    "*.vert": "glsl",
+    "iosfwd": "cpp"
+  }
+}
