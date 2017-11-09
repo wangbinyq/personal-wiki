@@ -1,9 +1,11 @@
+#ifndef VEC3H
+#define VEC3H
+
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
 
 class vec3 {
-  using namespace std;
 public:
   vec3() {}
   vec3(float e0, float e1, float e2) {
@@ -42,14 +44,14 @@ public:
   
 public:
   float e[3];
-}
+};
 
-inline istream& operator>>(istream &is, vec3 &t) {
+inline std::istream& operator>>(std::istream &is, vec3 &t) {
   is >> t.e[0] >> t.e[1] >> t.e[2];
   return is;
 }
 
-inline ostream& operator<<(ostream &os, const vec3 &t) {
+inline std::ostream& operator<<(std::ostream &os, const vec3 &t) {
   os << t.e[0] << t.e[1] << t.e[2];
   return os;
 }
@@ -98,5 +100,60 @@ inline vec3 cross(const vec3 &v1, const vec3 &v2) {
     v1.e[1] * v2.e[2] - v1.e[2] * v2.e[1],
     -(v1.e[0] * v2.e[2] - v1.e[2] * v2.e[0]),
     v1.e[0] * v2.e[1] - v1.e[1] * v2.e[0]
-  )
+  );
 }
+
+inline vec3& vec3::operator+=(const vec3 &v) {
+  e[0] += v.e[0];
+  e[1] += v.e[1];
+  e[2] += v.e[2];
+
+  return *this;
+}
+
+inline vec3& vec3::operator-=(const vec3 &v) {
+  e[0] -= v.e[0];
+  e[1] -= v.e[1];
+  e[2] -= v.e[2];
+
+  return *this;
+}
+
+inline vec3& vec3::operator*=(const vec3 &v) {
+  e[0] *= v.e[0];
+  e[1] *= v.e[1];
+  e[2] *= v.e[2];
+
+  return *this;
+}
+
+inline vec3& vec3::operator/=(const vec3 &v) {
+  e[0] /= v.e[0];
+  e[1] /= v.e[1];
+  e[2] /= v.e[2];
+
+  return *this;
+}
+
+inline vec3& vec3::operator*=(float t) {
+  e[0] *= t;
+  e[1] *= t;
+  e[2] *= t;
+
+  return *this;
+}
+
+inline vec3& vec3::operator/=(float t) {
+  t = 1 / t;
+
+  e[0] *= t;
+  e[1] *= t;
+  e[2] *= t;
+
+  return *this;
+}
+
+inline vec3 unit_vector(vec3 v) {
+  return v / v.length();
+}
+#endif
