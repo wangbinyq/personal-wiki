@@ -27,6 +27,7 @@
     "system_error": "cpp",
     "type_traits": "cpp",
     "typeinfo": "cpp",
-    "cfloat": "cpp"
+    "cfloat": "cpp",
+    "random": "cpp"
   }
 }
