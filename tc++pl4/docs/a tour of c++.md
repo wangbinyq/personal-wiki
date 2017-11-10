@@ -1,0 +1,3 @@
+- design of c++
+  - direct mappings of built in operations and types to hardware
+  - affordable and flexible abstraction mechanisms

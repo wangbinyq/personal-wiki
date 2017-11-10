@@ -1,8 +1,8 @@
 {
   "files.associations": {
-    "*.sbt": "scala",
     "*.postcss": "postcss",
     "*.tpl": "html",
+    "*.sbt": "scala",
     "*.vert": "glsl",
     "iosfwd": "cpp",
     "*.tcc": "cpp",
@@ -26,6 +26,7 @@
     "string_view": "cpp",
     "system_error": "cpp",
     "type_traits": "cpp",
-    "typeinfo": "cpp"
+    "typeinfo": "cpp",
+    "cfloat": "cpp"
   }
 }
