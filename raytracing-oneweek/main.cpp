@@ -1,5 +1,6 @@
 #include <iostream>
 #include <float.h>
+#include <omp.h>
 #include "sphere.h"
 #include "hitable_list.h"
 #include "camera.h"
@@ -56,8 +57,8 @@ hitable* random_scene() {
 int main () {
   using namespace std;
 
-  int nx = 400;
-  int ny = 200;
+  int nx = 1920;
+  int ny = 1080;
   int ns = 100;
   
   cout << "P3\n" << nx << " " << ny << "\n255\n";
@@ -84,6 +85,7 @@ int main () {
     for (int i = 0; i < nx; i++) {
       vec3 col(0, 0, 0);
 
+      #pragma omp parallel for
       for(int s = 0; s < ns; s++) {
         float u = float(i + drand48()) / float(nx);
         float v = float(j + drand48()) / float(ny);
