@@ -1,16 +1,20 @@
 import time
 import gym
+from sklearn.externals import joblib
 
 env = gym.make('CartPole-v0')
+model = joblib.load('model.pkl')
 
 while True:
     observation = env.reset()
-    for t in range(100):
+    score = 0
+    while True:
         env.render()
         time.sleep(0.01)
-        print(observation)
-        action = env.action_space.sample()
+        action = model.predict([observation])[0]
         observation, reward, done, info = env.step(action)
+        score += reward
         if done:
-            print(f'Episode finished after {t+1} timesteps')
+            print(f'score: {score}')
             break
+        
